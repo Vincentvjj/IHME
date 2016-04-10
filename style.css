@@ -7,11 +7,15 @@ body {
     text-align: center;
 }
 
+.loader {
+    text-align: center;
+    display: none;
+}
+
 path { 
     stroke-width: 2;
     fill: none;
 }
-
 
 .female {
 	stroke: black;

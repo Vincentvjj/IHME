@@ -31,13 +31,18 @@ var svg = d3.select(".chart")
 		.attr("transform", 
             "translate(" + (margin.left + 35) + "," + 5 + ")");
 
+var data; 
+
 d3.csv("dataset.CSV", function(error, data) {
+	$(".loader").hide();
 	// shows error message 
 	if(error) {
 		console.log("Error found: " + error);
 		document.getElementById("errorMessage").innerHtml = "Error: " + error;
 		return;
 	}
+
+	this.data = data; // for later use
 
 	// the first dropdown menu creation 
 	// data join uses maps, because data is too big, and we only need the unique location name values
@@ -139,6 +144,8 @@ d3.csv("dataset.CSV", function(error, data) {
         .attr("d", line(newDataFemale))
         .style("stroke", "steelblue")
         .style("stroke-dasharray", STROKE_DASH);
+}).on("progress", function(e) {
+	$(".loader").show();
 });
 
 
@@ -152,81 +159,80 @@ function change() {
 	var secondaryIndex = dropDownSecondary.property("selectedIndex");
 	var secondaryCountry = optionsSecondary.filter(function (d, i) {return i === secondaryIndex;}).datum();
 
-	d3.csv("dataset.CSV", function(error, data) {
-		var everyone = [],
-			newDataMale = [],
-			newDataFemale = [],
-			newDataMaleSecondary = [],
-			newDataFemaleSecondary = [];
+	
+	var everyone = [],
+		newDataMale = [],
+		newDataFemale = [],
+		newDataMaleSecondary = [],
+		newDataFemaleSecondary = [];
 
-		// more data formation
-		data.forEach(function (d) {
-			if(d.location_name == primaryCountry && d.age_group_id == ADULT_AGE_GROUP && d.metric == "obese"
-				&& (d.sex == "male" || d.sex == "female")) {
-				everyone.push({
+	// more data formation
+	data.forEach(function (d) {
+		if(d.location_name == primaryCountry && d.age_group_id == ADULT_AGE_GROUP && d.metric == "obese"
+			&& (d.sex == "male" || d.sex == "female")) {
+			everyone.push({
+				year: parseInt(d.year),
+				mean: d.mean
+			});
+
+			if(d.sex == "male") {
+				newDataMale.push({
 					year: parseInt(d.year),
 					mean: d.mean
 				});
-
-				if(d.sex == "male") {
-					newDataMale.push({
-						year: parseInt(d.year),
-						mean: d.mean
-					});
-				} else if(d.sex == "female") {
-					newDataFemale.push({
-						year: parseInt(d.year),
-						mean: d.mean
-					});
-				} 
-			// now we start to care for the different selection of the secondary country
-			} else if (d.location_name == secondaryCountry && d.age_group_id == ADULT_AGE_GROUP && d.metric == "obese") {
-				everyone.push({
+			} else if(d.sex == "female") {
+				newDataFemale.push({
 					year: parseInt(d.year),
 					mean: d.mean
 				});
+			} 
+		// now we start to care for the different selection of the secondary country
+		} else if (d.location_name == secondaryCountry && d.age_group_id == ADULT_AGE_GROUP && d.metric == "obese") {
+			everyone.push({
+				year: parseInt(d.year),
+				mean: d.mean
+			});
 
-				if(d.sex == "male") {
-					newDataMaleSecondary.push({
-						year: parseInt(d.year),
-						mean: d.mean
-					});
-				} else if(d.sex == "female") {
-					newDataFemaleSecondary.push({
-						year: parseInt(d.year),
-						mean: d.mean
-					});
-				} 
-			}
-		});
-		
-		// reinitialize the x and y range/domains
-		x.domain(d3.extent(everyone, function (d) {return d.year;}));
-		y.domain(d3.extent(everyone, function (d) {return d.mean * ONE_HUDRERD_PERCENT;}));
-
-		var svg = d3.select(".chart").transition();
-
-        svg.select(".x axis") // change the x axis
-            .duration(750)
-            .call(xAxis);
-        svg.select(".y.axis") // change the y axis
-            .duration(750)
-            .call(yAxis);
-
-        svg.select(".male")   // change the primary male line
-            .duration(750)
-            .attr("d", line(newDataMale));
-
-        svg.select(".female")   // change the primary female line
-            .duration(750)
-            .attr("d", line(newDataFemale));
-
-        svg.select(".maleSecondary")   // change the secondary male line
-            .duration(750)
-            .attr("d", line(newDataMaleSecondary));
-
-        svg.select(".femaleSecondary")   // change the secondary female line
-            .duration(750)
-            .attr("d", line(newDataFemaleSecondary));
+			if(d.sex == "male") {
+				newDataMaleSecondary.push({
+					year: parseInt(d.year),
+					mean: d.mean
+				});
+			} else if(d.sex == "female") {
+				newDataFemaleSecondary.push({
+					year: parseInt(d.year),
+					mean: d.mean
+				});
+			} 
+		}
 	});
+	
+	// reinitialize the x and y range/domains
+	x.domain(d3.extent(everyone, function (d) {return d.year;}));
+	y.domain(d3.extent(everyone, function (d) {return d.mean * ONE_HUDRERD_PERCENT;}));
+
+	var svg = d3.select(".chart").transition();
+
+    svg.select(".x axis") // change the x axis
+        .duration(750)
+        .call(xAxis);
+    svg.select(".y.axis") // change the y axis
+        .duration(750)
+        .call(yAxis);
+
+    svg.select(".male")   // change the primary male line
+        .duration(750)
+        .attr("d", line(newDataMale));
+
+    svg.select(".female")   // change the primary female line
+        .duration(750)
+        .attr("d", line(newDataFemale));
+
+    svg.select(".maleSecondary")   // change the secondary male line
+        .duration(750)
+        .attr("d", line(newDataMaleSecondary));
+
+    svg.select(".femaleSecondary")   // change the secondary female line
+        .duration(750)
+        .attr("d", line(newDataFemaleSecondary));
 };

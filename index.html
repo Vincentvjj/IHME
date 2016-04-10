@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<head>
+	<title>Obesity Comparator</title>
+</head>
+<body>
+	<!-- Styling  -->
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+	<p class="title">World Obesity Comparator</p>
+	<p class="explain">This information visualization allows users to compare how prevalence obesity is in one country to the other. The data is collected from people ranging from the age of 20 to 100. </p>
+
+	<div id="errorMessage"></div>
+
+	<div class="dropdowns" align="center">
+		<table>
+			<tr>
+				<td>
+					Primary:
+				</td>
+				<td>
+					Secondary:
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<span class="primary"></span>
+				</td>
+				<td>
+					<span class="secondary"></span>
+				</td>
+			</tr>
+		</table>		
+	</div>
+
+	<div class="chart"></div>
+	<img src="legend.png" alt="legend">
+</body>
+
+<!-- JavaSctipt files -->
+<script src="d3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="main.js"></script>
+</html>

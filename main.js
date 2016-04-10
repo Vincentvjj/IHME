@@ -31,7 +31,7 @@ var svg = d3.select(".chart")
 		.attr("transform", 
             "translate(" + (margin.left + 35) + "," + 5 + ")");
 
-d3.csv("IHME_GBD_2013_OBESITY_PREVALENCE_1990_2013_Y2014M10D08.csv", function(error, data) {
+d3.csv("dataset.csv", function(error, data) {
 	// shows error message 
 	if(error) {
 		console.log("Error found: " + error);
@@ -152,7 +152,7 @@ function change() {
 	var secondaryIndex = dropDownSecondary.property("selectedIndex");
 	var secondaryCountry = optionsSecondary.filter(function (d, i) {return i === secondaryIndex;}).datum();
 
-	d3.csv("IHME_GBD_2013_OBESITY_PREVALENCE_1990_2013_Y2014M10D08.csv", function(error, data) {
+	d3.csv("dataset.csv", function(error, data) {
 		var everyone = [],
 			newDataMale = [],
 			newDataFemale = [],

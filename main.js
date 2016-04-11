@@ -121,7 +121,7 @@ d3.csv("dataset.CSV", function(error, data) {
         .attr("class", "male")
         .attr("d", line(newDataMale))
         .style("stroke", "red");
-	
+
 	// line creation for female in primary country --> Afghanistan (default)
 	svg.append("path")
         .attr("class", "line")
